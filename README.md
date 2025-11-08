@@ -3,10 +3,14 @@
 **DuoGIS** is a next-generation interactive learning platform built with **React**, combining **Duolingo’s proven gamification methodology** with **geography education**.  
 The platform aims to teach users about **world geography** and **cultural symbols (flags)** through an **interactive map interface**.
 
-![DuoGIS Interface](https://github.com/user-attachments/assets/3bca5ec1-caab-4411-95bd-bbd9c14b7738)
+
+https://github.com/user-attachments/assets/e6b79fb0-829b-4462-b309-9f9bfa13b731
+
+
+
 
 ---
-
+![DuoGIS Interface](https://github.com/user-attachments/assets/3bca5ec1-caab-4411-95bd-bbd9c14b7738)
 ### Mission
 
 To make world geography and cultures fun, interactive, and accessible for everyone — delivering a lasting learning experience inspired by the Duolingo methodology.
