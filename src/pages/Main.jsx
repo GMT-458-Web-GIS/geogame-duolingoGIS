@@ -30,15 +30,60 @@ const Main = () => {
   const [correctAnswerIndex, setCorrectAnswerIndex] = useState(null); // Doğru cevabın index'i
   const vectorSourceRef = useRef(null);
   const vectorLayerRef = useRef(null);
+  const tileLayerRef = useRef(null); // OSM tile layer referansı
   let highlightFeature = null;
 
   const toggleSection = (section) => {
     setOpenSection(openSection === section ? null : section);
   };
 
+  const loadContinentMap = (section) => {
+    // Section'a göre JSON dosya yolunu belirle
+    const geoJsonPaths = {
+      header2: '/databases/maps/europe.json',    // Europe
+      header1: '/databases/maps/america.json',   // Americas
+      header: '/databases/maps/asia.json'        // Asia
+    };
+
+    const geoJsonPath = geoJsonPaths[section];
+    
+    if (!geoJsonPath || !vectorSourceRef.current) return;
+
+    // Sadece vektör katmanını fade-out yap (OSM kalsın)
+    if (vectorLayerRef.current) {
+      vectorLayerRef.current.setOpacity(0);
+    }
+
+    // 500ms sonra GeoJSON'ı değiştir ve fade-in yap
+    setTimeout(() => {
+      // Yeni GeoJSON'ı yükle
+      const newSource = new VectorSource({
+        url: geoJsonPath,
+        format: new GeoJSON()
+      });
+
+      // Eski source'u yeni ile değiştir
+      if (vectorLayerRef.current) {
+        vectorLayerRef.current.setSource(newSource);
+        vectorSourceRef.current = newSource;
+        
+        // Fade-in animasyonu başlat
+        vectorLayerRef.current.setOpacity(0);
+        setTimeout(() => {
+          if (vectorLayerRef.current) {
+            vectorLayerRef.current.setOpacity(1);
+          }
+        }, 10);
+      }
+    }, 10);
+  };
+
   const startLevel = (section) => {
     setCurrentLevel(section);
     setGameStarted(true);
+    
+    // İlgili kıta haritasını yükle (fade-out/fade-in ile)
+    loadContinentMap(section);
     
     // Bu section için rastgele bir ülke seç (doğru cevap)
     const correctCountry = getRandomCountry(section);
@@ -62,9 +107,9 @@ const Main = () => {
     
     // Zoom animasyonunu section'a göre yap
     const zoomConfigs = {
-      header2: { center: fromLonLat([15, 50]), zoom: 4 }, // Avrupa
-      header1: { center: fromLonLat([-90, 0]), zoom: 3 }, // Amerika
-      header: { center: fromLonLat([100, 35]), zoom: 3 } // Asya
+      header2: { center: fromLonLat([35, 52]), zoom: 4.5 }, // Avrupa
+      header1: { center: fromLonLat([-85, 38]), zoom: 2.8 }, // Amerika
+      header: { center: fromLonLat([80, 27]), zoom: 4.3 } // Asya
     };
     
     if (mapInstanceRef.current && zoomConfigs[section]) {
@@ -106,7 +151,7 @@ const Main = () => {
     if (mapInstanceRef.current) {
       mapInstanceRef.current.getView().animate({
         center: fromLonLat([15, 50]), // Avrupa merkezi
-        zoom: 4,
+        zoom: 5,
         duration: 1000
       });
     }
@@ -154,9 +199,15 @@ const Main = () => {
   useEffect(() => {
     if (!mapRef.current) return;
 
-    // GeoJSON vektör katmanı oluştur
+    // OSM tile layer oluştur (başlangıçta görünür)
+    const tileLayer = new TileLayer({
+      source: new OSM()
+    });
+    tileLayerRef.current = tileLayer;
+
+    // GeoJSON vektör katmanı oluştur (başlangıçta custom.geo.json ile)
     const vectorSource = new VectorSource({
-      url: './databases/maps/custom.geo.json',
+      url: '/databases/maps/custom.geo.json',
       format: new GeoJSON()
     });
     vectorSourceRef.current = vectorSource;
@@ -175,17 +226,15 @@ const Main = () => {
     });
     vectorLayerRef.current = vectorLayer;
 
-    // OpenLayers harita oluştur
+    // OpenLayers harita oluştur - Başlangıçta OSM + custom.geo.json
     const map = new Map({
       target: mapRef.current,
       layers: [
-        new TileLayer({
-          source: new OSM()
-        }),
-        vectorLayer
+        tileLayer,    // OSM altlık
+        vectorLayer   // custom.geo.json
       ],
       view: new View({
-        center: fromLonLat([0, 45]), // Merkezi yukarı kaldır (20'den 35'e)
+        center: fromLonLat([0, 45]),
         zoom: 1.8
       }),
       // Mouse interaksiyonlarını kapat

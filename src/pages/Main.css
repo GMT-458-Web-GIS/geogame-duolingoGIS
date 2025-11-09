@@ -1432,3 +1432,7 @@
   }
 }
 
+/* OpenLayers Layer Transition */
+.ol-layer {
+  transition: opacity 0.5s ease-in-out;
+}
