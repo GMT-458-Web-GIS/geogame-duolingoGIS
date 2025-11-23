@@ -508,15 +508,15 @@ const Main = () => {
         </div>
         <div className="stats-container">
           <div className="stat-item">
-            <img src="/images/components/streak_button.svg" alt="Streak" className="stat-icon" />
+            <img src="/assets/images/components/streak_button.svg" alt="Streak" className="stat-icon" />
             <span className="stat-value">0</span>
           </div>
           <div className="stat-item">
-            <img src="/images/components/gem_button.svg" alt="Gems" className="stat-icon" />
+            <img src="/assets/images/components/gem_button.svg" alt="Gems" className="stat-icon" />
             <span className="stat-value">{gems}</span>
           </div>
           <div className="stat-item">
-            <img src="/images/components/health_button.svg" alt="Health" className="stat-icon" />
+            <img src="/assets/images/components/health_button.svg" alt="Health" className="stat-icon" />
             <span className="stat-value">{health}</span>
           </div>
         </div>
@@ -807,7 +807,7 @@ const Main = () => {
             autoPlay
             onEnded={handleVideoEnd}
           >
-            <source src="/videos/duointro.mp4" type="video/mp4" />
+            <source src="/assets/duointro.mp4" type="video/mp4" />
             Your browser does not support the video tag.
           </video>
           
