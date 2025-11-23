@@ -428,7 +428,7 @@ const Main = () => {
 
     // GeoJSON vektör katmanı oluştur (başlangıçta custom.geo.json ile)
     const vectorSource = new VectorSource({
-      url: '/databases/maps/custom.geo.json',
+      url: getAssetPath('/databases/maps/custom.geo.json'),
       format: new GeoJSON()
     });
     vectorSourceRef.current = vectorSource;
@@ -609,7 +609,7 @@ const Main = () => {
                           onClick={() => unlockedLevels.header2.includes(1) && startLevel('header2', 1)}
                           disabled={!unlockedLevels.header2.includes(1)}
                         >
-                          <img src={unlockedLevels.header2.includes(1) ? "/images/duo/level_path/div.png" : "/images/duo/level_path/Story.png"} alt="Level 2" />
+                          <img src={unlockedLevels.header2.includes(1) ? getAssetPath("/images/duo/level_path/div.png") : getAssetPath("/images/duo/level_path/Story.png")} alt="Level 2" />
                         </button>
                         <button 
                           className={`level-button ${unlockedLevels.header2.includes(2) ? 'div-button' : 'story-button locked'}`}
@@ -617,7 +617,7 @@ const Main = () => {
                           onClick={() => unlockedLevels.header2.includes(2) && startLevel('header2', 2)}
                           disabled={!unlockedLevels.header2.includes(2)}
                         >
-                          <img src={unlockedLevels.header2.includes(2) ? "/images/duo/level_path/div.png" : "/images/duo/level_path/Story.png"} alt="Level 3" />
+                          <img src={unlockedLevels.header2.includes(2) ? getAssetPath("/images/duo/level_path/div.png") : getAssetPath("/images/duo/level_path/Story.png")} alt="Level 3" />
                         </button>
                         <button 
                           className={`level-button ${unlockedLevels.header2.includes(3) ? 'div-button' : 'story-button locked'}`}
@@ -625,7 +625,7 @@ const Main = () => {
                           onClick={() => unlockedLevels.header2.includes(3) && startLevel('header2', 3)}
                           disabled={!unlockedLevels.header2.includes(3)}
                         >
-                          <img src={unlockedLevels.header2.includes(3) ? "/images/duo/level_path/div.png" : "/images/duo/level_path/Story.png"} alt="Level 4" />
+                          <img src={unlockedLevels.header2.includes(3) ? getAssetPath("/images/duo/level_path/div.png") : getAssetPath("/images/duo/level_path/Story.png")} alt="Level 4" />
                         </button>
                       </div>
                     )}
@@ -653,7 +653,7 @@ const Main = () => {
                           onClick={() => unlockedLevels.header1.includes(1) && startLevel('header1', 1)}
                           disabled={!unlockedLevels.header1.includes(1)}
                         >
-                          <img src={unlockedLevels.header1.includes(1) ? "/images/duo/level_path/div.png" : "/images/duo/level_path/Story.png"} alt="Level 2" />
+                          <img src={unlockedLevels.header1.includes(1) ? getAssetPath("/images/duo/level_path/div.png") : getAssetPath("/images/duo/level_path/Story.png")} alt="Level 2" />
                         </button>
                         <button 
                           className={`level-button ${unlockedLevels.header1.includes(2) ? 'div-button' : 'story-button locked'}`}
@@ -661,7 +661,7 @@ const Main = () => {
                           onClick={() => unlockedLevels.header1.includes(2) && startLevel('header1', 2)}
                           disabled={!unlockedLevels.header1.includes(2)}
                         >
-                          <img src={unlockedLevels.header1.includes(2) ? "/images/duo/level_path/div.png" : "/images/duo/level_path/Story.png"} alt="Level 3" />
+                          <img src={unlockedLevels.header1.includes(2) ? getAssetPath("/images/duo/level_path/div.png") : getAssetPath("/images/duo/level_path/Story.png")} alt="Level 3" />
                         </button>
                         <button 
                           className={`level-button ${unlockedLevels.header1.includes(3) ? 'div-button' : 'story-button locked'}`}
@@ -669,7 +669,7 @@ const Main = () => {
                           onClick={() => unlockedLevels.header1.includes(3) && startLevel('header1', 3)}
                           disabled={!unlockedLevels.header1.includes(3)}
                         >
-                          <img src={unlockedLevels.header1.includes(3) ? "/images/duo/level_path/div.png" : "/images/duo/level_path/Story.png"} alt="Level 4" />
+                          <img src={unlockedLevels.header1.includes(3) ? getAssetPath("/images/duo/level_path/div.png") : getAssetPath("/images/duo/level_path/Story.png")} alt="Level 4" />
                         </button>
                       </div>
                     )}
@@ -697,7 +697,7 @@ const Main = () => {
                           onClick={() => unlockedLevels.header.includes(1) && startLevel('header', 1)}
                           disabled={!unlockedLevels.header.includes(1)}
                         >
-                          <img src={unlockedLevels.header.includes(1) ? "/images/duo/level_path/div.png" : "/images/duo/level_path/Story.png"} alt="Level 2" />
+                          <img src={unlockedLevels.header.includes(1) ? getAssetPath("/images/duo/level_path/div.png") : getAssetPath("/images/duo/level_path/Story.png")} alt="Level 2" />
                         </button>
                         <button 
                           className={`level-button ${unlockedLevels.header.includes(2) ? 'div-button' : 'story-button locked'}`}
@@ -705,7 +705,7 @@ const Main = () => {
                           onClick={() => unlockedLevels.header.includes(2) && startLevel('header', 2)}
                           disabled={!unlockedLevels.header.includes(2)}
                         >
-                          <img src={unlockedLevels.header.includes(2) ? "/images/duo/level_path/div.png" : "/images/duo/level_path/Story.png"} alt="Level 3" />
+                          <img src={unlockedLevels.header.includes(2) ? getAssetPath("/images/duo/level_path/div.png") : getAssetPath("/images/duo/level_path/Story.png")} alt="Level 3" />
                         </button>
                         <button 
                           className={`level-button ${unlockedLevels.header.includes(3) ? 'div-button' : 'story-button locked'}`}
@@ -713,7 +713,7 @@ const Main = () => {
                           onClick={() => unlockedLevels.header.includes(3) && startLevel('header', 3)}
                           disabled={!unlockedLevels.header.includes(3)}
                         >
-                          <img src={unlockedLevels.header.includes(3) ? "/images/duo/level_path/div.png" : "/images/duo/level_path/Story.png"} alt="Level 4" />
+                          <img src={unlockedLevels.header.includes(3) ? getAssetPath("/images/duo/level_path/div.png") : getAssetPath("/images/duo/level_path/Story.png")} alt="Level 4" />
                         </button>
                       </div>
                     )}
@@ -754,7 +754,7 @@ const Main = () => {
                                 alt={country.name}
                                 onError={(e) => {
                                   console.log(`Flag not found for ${country.name} (${country.code})`);
-                                  e.target.src = '/images/duo/level_path/Story.png'; // Fallback image
+                                  e.target.src = getAssetPath('/images/duo/level_path/Story.png'); // Fallback image
                                 }}
                               />
                             </div>
