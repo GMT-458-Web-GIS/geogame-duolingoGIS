@@ -21,6 +21,7 @@ const Main = () => {
   const [gameStarted, setGameStarted] = useState(false);
   const [openSection, setOpenSection] = useState(null);
   const [currentLevel, setCurrentLevel] = useState(null); // 'header2', 'header1', 'header'
+  const [selectedSection, setSelectedSection] = useState(null); // Seçilen bölüm (Continue için)
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [isAnswerChecked, setIsAnswerChecked] = useState(false);
   const [checkState, setCheckState] = useState('unchecked'); // 'unchecked', 'checked', 'correct', 'incorrect'
@@ -29,6 +30,22 @@ const Main = () => {
   const [flagOptions, setFlagOptions] = useState([]); // 4 bayrak seçeneği
   const [correctAnswerIndex, setCorrectAnswerIndex] = useState(null); // Doğru cevabın index'i
   const [correctlyAnsweredCountries, setCorrectlyAnsweredCountries] = useState([]); // Doğru bilinen ülkeler
+  
+  // Level progression system
+  const [currentLevelIndex, setCurrentLevelIndex] = useState(0); // Current level being played (0-3)
+  const [correctAnswersInLevel, setCorrectAnswersInLevel] = useState(0); // Correct answers in current level
+  const [unlockedLevels, setUnlockedLevels] = useState({
+    header2: [0], // Europe - first level unlocked
+    header1: [0], // Americas - first level unlocked  
+    header: [0]   // Asia - first level unlocked
+  });
+  
+  // Intro video state
+  const [showIntroVideo, setShowIntroVideo] = useState(false);
+  const [showCharacterSelection, setShowCharacterSelection] = useState(false);
+  const [selectedCharacter, setSelectedCharacter] = useState(null);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [contentFadedOut, setContentFadedOut] = useState(false);
   const vectorSourceRef = useRef(null);
   const vectorLayerRef = useRef(null);
   const tileLayerRef = useRef(null); // OSM tile layer referansı
@@ -112,8 +129,11 @@ const Main = () => {
     }, 10);
   };
 
-  const startLevel = (section) => {
+  const startLevel = (section, levelIndex = 0) => {
     setCurrentLevel(section);
+    setSelectedSection(section); // Seçilen section'ı kaydet
+    setCurrentLevelIndex(levelIndex);
+    setCorrectAnswersInLevel(0); // Reset correct answers counter
     setGameStarted(true);
     
     // İlgili kıta haritasını yükle (fade-out/fade-in ile)
@@ -141,9 +161,9 @@ const Main = () => {
     
     // Zoom animasyonunu section'a göre yap
     const zoomConfigs = {
-      header2: { center: fromLonLat([35, 52]), zoom: 4.5 }, // Avrupa
-      header1: { center: fromLonLat([-85, 38]), zoom: 2.8 }, // Amerika
-      header: { center: fromLonLat([80, 27]), zoom: 4.3 } // Asya
+      header2: { center: fromLonLat([15, 54]), zoom: 3.8 }, // Avrupa
+      header1: { center: fromLonLat([-85, 35]), zoom: 2.3 }, // Amerika
+      header: { center: fromLonLat([85, 30]), zoom: 3.5 } // Asya
     };
     
     if (mapInstanceRef.current && zoomConfigs[section]) {
@@ -170,6 +190,7 @@ const Main = () => {
       // Doğru/yanlış kontrolü
       if (selectedAnswer === correctAnswerIndex) {
         setCheckState('correct');
+        
         // Doğru cevaplanan ülkeyi listeye ekle
         if (currentQuestion && !correctlyAnsweredCountries.includes(currentQuestion.name)) {
           setCorrectlyAnsweredCountries(prev => [...prev, currentQuestion.name]);
@@ -178,6 +199,22 @@ const Main = () => {
             highlightCountryOnMap(currentQuestion.name);
           }, 100);
         }
+        
+        // Increment correct answers in current level
+        const newCorrectCount = correctAnswersInLevel + 1;
+        setCorrectAnswersInLevel(newCorrectCount);
+        
+        // Check if level is completed (3 correct answers)
+        if (newCorrectCount >= 3) {
+          // Unlock next level if not already unlocked
+          if (currentLevelIndex < 3) { // Max 4 levels (0,1,2,3)
+            setUnlockedLevels(prev => ({
+              ...prev,
+              [selectedSection]: [...new Set([...prev[selectedSection], currentLevelIndex + 1])]
+            }));
+          }
+        }
+        
         // Doğru ses çal
         const correctAudio = new Audio('/sfx/true.mp3');
         correctAudio.volume = 0.5;
@@ -192,14 +229,52 @@ const Main = () => {
     }
   };
 
+  const generateNewQuestion = () => {
+    // Bu section için rastgele bir ülke seç (doğru cevap)
+    const correctCountry = getRandomCountry(selectedSection);
+    setCurrentQuestion(correctCountry);
+    
+    // Doğru cevap dışında 3 tane daha rastgele ülke seç
+    const otherCountries = getRandomCountries(selectedSection, 3, correctCountry);
+    
+    // 4 seçeneği karıştır
+    const allOptions = [correctCountry, ...otherCountries];
+    const shuffledOptions = allOptions.sort(() => Math.random() - 0.5);
+    
+    // Doğru cevabın yeni index'ini bul
+    const correctIndex = shuffledOptions.findIndex(country => country.code === correctCountry.code);
+    
+    setFlagOptions(shuffledOptions);
+    setCorrectAnswerIndex(correctIndex);
+    
+    // Haritada sorduğu ülkeyi vurgula
+    setTimeout(() => {
+      highlightCountryOnMap(correctCountry.name);
+    }, 100);
+  };
+
   const handleContinueClick = () => {
+    // Check if level is completed
+    if (correctAnswersInLevel >= 3) {
+      // Level completed, return to level selection
+      setGameStarted(false);
+      setCurrentLevel(null);
+      setCorrectAnswersInLevel(0);
+      setSelectedAnswer(null);
+      setIsAnswerChecked(false);
+      setCheckState('unchecked');
+      return;
+    }
+    
     // Yeni soru için durumları sıfırla
     setSelectedAnswer(null);
     setIsAnswerChecked(false);
-    setCheckState('initial');
+    setCheckState('unchecked');
     
-    // Yeni soru oluştur
-    startLevel(selectedSection);
+    // Yeni soru oluştur (same level, don't reset progress)
+    if (selectedSection) {
+      generateNewQuestion();
+    }
   };
 
   const startGame = () => {
@@ -246,12 +321,63 @@ const Main = () => {
   };
 
   const handleTitleClick = () => {
-    setShowWelcomeModal(true);
+    // Start transition sequence
+    setIsTransitioning(true);
+    
+    // Play intro sound
+    const playIntroSound = () => {
+      const audio = new Audio('/sfx/intro.mp3');
+      audio.volume = 0.5;
+      audio.play().catch(error => {
+        console.log('Audio play failed:', error);
+      });
+    };
+
+    playIntroSound();
+    
+    // Fade out content first
+    setTimeout(() => {
+      setContentFadedOut(true);
+    }, 100);
+    
+    // Show video after background transition
+    setTimeout(() => {
+      setShowIntroVideo(true);
+    }, 1000);
+  };
+
+  const handleVideoEnd = () => {
+    setShowCharacterSelection(true);
+  };
+
+  const handleCharacterSelect = (character) => {
+    setSelectedCharacter(character);
+  };
+
+  const handleStartGame = () => {
+    setShowIntroVideo(false);
+    setShowCharacterSelection(false);
+    setSelectedCharacter(null);
+    setContentFadedOut(false);
+    setIsTransitioning(false);
   };
 
   const closeWelcomeModal = () => {
     setShowWelcomeModal(false);
   };
+
+  useEffect(() => {
+    // Play intro sound when Main page loads
+    const playIntroSound = () => {
+      const audio = new Audio('/sfx/intro.mp3');
+      audio.volume = 0.5;
+      audio.play().catch(error => {
+        console.log('Audio play failed:', error);
+      });
+    };
+
+    playIntroSound();
+  }, []);
 
   useEffect(() => {
     if (!mapRef.current) return;
@@ -292,7 +418,7 @@ const Main = () => {
       ],
       view: new View({
         center: fromLonLat([0, 45]),
-        zoom: 1.8
+        zoom: 1.5
       }),
       // Mouse interaksiyonlarını kapat
       interactions: [],
@@ -386,31 +512,38 @@ const Main = () => {
           {showLeaderboard ? (
             <div className="leaderboard">
               <h3>Sıralama Tablosu</h3>
-              <div className="leaderboard-item">
-                <span className="rank">1.</span>
-                <span className="name">Kullanıcı 1</span>
-                <span className="score">1250</span>
+
+              {/* Locked / placeholder top users with an overlay */}
+              <div className="leaderboard-locked">
+                <div className="locked-items">
+                  <div className="leaderboard-item">
+                    <span className="rank">1.</span>
+                    <span className="name">Kullanıcı 1</span>
+                    <span className="score">1250</span>
+                  </div>
+                  <div className="leaderboard-item">
+                    <span className="rank">2.</span>
+                    <span className="name">Kullanıcı 2</span>
+                    <span className="score">980</span>
+                  </div>
+                  <div className="leaderboard-item">
+                    <span className="rank">3.</span>
+                    <span className="name">Kullanıcı 3</span>
+                    <span className="score">750</span>
+                  </div>
+                  <div className="leaderboard-item">
+                    <span className="rank">4.</span>
+                    <span className="name">Kullanıcı 4</span>
+                    <span className="score">620</span>
+                  </div>
+                </div>
+
+                <div className="leaderboard-overlay">
+                  <div className="overlay-text">kaan is busy, he'll develop sometime</div>
+                </div>
               </div>
-              <div className="leaderboard-item">
-                <span className="rank">2.</span>
-                <span className="name">Kullanıcı 2</span>
-                <span className="score">980</span>
-              </div>
-              <div className="leaderboard-item">
-                <span className="rank">3.</span>
-                <span className="name">Kullanıcı 3</span>
-                <span className="score">750</span>
-              </div>
-              <div className="leaderboard-item">
-                <span className="rank">4.</span>
-                <span className="name">Kullanıcı 4</span>
-                <span className="score">620</span>
-              </div>
-              <div className="leaderboard-item">
-                <span className="rank">5.</span>
-                <span className="name">Kullanıcı 5</span>
-                <span className="score">450</span>
-              </div>
+
+
             </div>
           ) : (
             <>
@@ -424,17 +557,37 @@ const Main = () => {
                     </div>
                     {openSection === 'header2' && (
                       <div className="level-content">
-                        <button className="level-button div-button" title="Div Challenge" onClick={() => startLevel('header2')}>
-                          <img src="/images/duo/level_path/div.png" alt="Div" />
+                        <button 
+                          className={`level-button div-button ${!unlockedLevels.header2.includes(0) ? 'locked' : ''}`}
+                          title="Level 1" 
+                          onClick={() => unlockedLevels.header2.includes(0) && startLevel('header2', 0)}
+                          disabled={!unlockedLevels.header2.includes(0)}
+                        >
+                          <img src="/images/duo/level_path/div.png" alt="Level 1" />
                         </button>
-                        <button className="level-button story-button" title="Story 1">
-                          <img src="/images/duo/level_path/Story.png" alt="Story 1" />
+                        <button 
+                          className={`level-button ${unlockedLevels.header2.includes(1) ? 'div-button' : 'story-button locked'}`}
+                          title="Level 2"
+                          onClick={() => unlockedLevels.header2.includes(1) && startLevel('header2', 1)}
+                          disabled={!unlockedLevels.header2.includes(1)}
+                        >
+                          <img src={unlockedLevels.header2.includes(1) ? "/images/duo/level_path/div.png" : "/images/duo/level_path/Story.png"} alt="Level 2" />
                         </button>
-                        <button className="level-button story-button" title="Story 2">
-                          <img src="/images/duo/level_path/Story.png" alt="Story 2" />
+                        <button 
+                          className={`level-button ${unlockedLevels.header2.includes(2) ? 'div-button' : 'story-button locked'}`}
+                          title="Level 3"
+                          onClick={() => unlockedLevels.header2.includes(2) && startLevel('header2', 2)}
+                          disabled={!unlockedLevels.header2.includes(2)}
+                        >
+                          <img src={unlockedLevels.header2.includes(2) ? "/images/duo/level_path/div.png" : "/images/duo/level_path/Story.png"} alt="Level 3" />
                         </button>
-                        <button className="level-button story-button" title="Story 3">
-                          <img src="/images/duo/level_path/Story.png" alt="Story 3" />
+                        <button 
+                          className={`level-button ${unlockedLevels.header2.includes(3) ? 'div-button' : 'story-button locked'}`}
+                          title="Level 4"
+                          onClick={() => unlockedLevels.header2.includes(3) && startLevel('header2', 3)}
+                          disabled={!unlockedLevels.header2.includes(3)}
+                        >
+                          <img src={unlockedLevels.header2.includes(3) ? "/images/duo/level_path/div.png" : "/images/duo/level_path/Story.png"} alt="Level 4" />
                         </button>
                       </div>
                     )}
@@ -448,17 +601,37 @@ const Main = () => {
                     </div>
                     {openSection === 'header1' && (
                       <div className="level-content">
-                        <button className="level-button div-button" title="Div Challenge" onClick={() => startLevel('header1')}>
-                          <img src="/images/duo/level_path/div.png" alt="Div" />
+                        <button 
+                          className={`level-button div-button ${!unlockedLevels.header1.includes(0) ? 'locked' : ''}`}
+                          title="Level 1" 
+                          onClick={() => unlockedLevels.header1.includes(0) && startLevel('header1', 0)}
+                          disabled={!unlockedLevels.header1.includes(0)}
+                        >
+                          <img src="/images/duo/level_path/div.png" alt="Level 1" />
                         </button>
-                        <button className="level-button story-button" title="Story 1">
-                          <img src="/images/duo/level_path/Story.png" alt="Story 1" />
+                        <button 
+                          className={`level-button ${unlockedLevels.header1.includes(1) ? 'div-button' : 'story-button locked'}`}
+                          title="Level 2"
+                          onClick={() => unlockedLevels.header1.includes(1) && startLevel('header1', 1)}
+                          disabled={!unlockedLevels.header1.includes(1)}
+                        >
+                          <img src={unlockedLevels.header1.includes(1) ? "/images/duo/level_path/div.png" : "/images/duo/level_path/Story.png"} alt="Level 2" />
                         </button>
-                        <button className="level-button story-button" title="Story 2">
-                          <img src="/images/duo/level_path/Story.png" alt="Story 2" />
+                        <button 
+                          className={`level-button ${unlockedLevels.header1.includes(2) ? 'div-button' : 'story-button locked'}`}
+                          title="Level 3"
+                          onClick={() => unlockedLevels.header1.includes(2) && startLevel('header1', 2)}
+                          disabled={!unlockedLevels.header1.includes(2)}
+                        >
+                          <img src={unlockedLevels.header1.includes(2) ? "/images/duo/level_path/div.png" : "/images/duo/level_path/Story.png"} alt="Level 3" />
                         </button>
-                        <button className="level-button story-button" title="Story 3">
-                          <img src="/images/duo/level_path/Story.png" alt="Story 3" />
+                        <button 
+                          className={`level-button ${unlockedLevels.header1.includes(3) ? 'div-button' : 'story-button locked'}`}
+                          title="Level 4"
+                          onClick={() => unlockedLevels.header1.includes(3) && startLevel('header1', 3)}
+                          disabled={!unlockedLevels.header1.includes(3)}
+                        >
+                          <img src={unlockedLevels.header1.includes(3) ? "/images/duo/level_path/div.png" : "/images/duo/level_path/Story.png"} alt="Level 4" />
                         </button>
                       </div>
                     )}
@@ -472,17 +645,37 @@ const Main = () => {
                     </div>
                     {openSection === 'header' && (
                       <div className="level-content">
-                        <button className="level-button div-button" title="Div Challenge" onClick={() => startLevel('header')}>
-                          <img src="/images/duo/level_path/div.png" alt="Div" />
+                        <button 
+                          className={`level-button div-button ${!unlockedLevels.header.includes(0) ? 'locked' : ''}`}
+                          title="Level 1" 
+                          onClick={() => unlockedLevels.header.includes(0) && startLevel('header', 0)}
+                          disabled={!unlockedLevels.header.includes(0)}
+                        >
+                          <img src="/images/duo/level_path/div.png" alt="Level 1" />
                         </button>
-                        <button className="level-button story-button" title="Story 1">
-                          <img src="/images/duo/level_path/Story.png" alt="Story 1" />
+                        <button 
+                          className={`level-button ${unlockedLevels.header.includes(1) ? 'div-button' : 'story-button locked'}`}
+                          title="Level 2"
+                          onClick={() => unlockedLevels.header.includes(1) && startLevel('header', 1)}
+                          disabled={!unlockedLevels.header.includes(1)}
+                        >
+                          <img src={unlockedLevels.header.includes(1) ? "/images/duo/level_path/div.png" : "/images/duo/level_path/Story.png"} alt="Level 2" />
                         </button>
-                        <button className="level-button story-button" title="Story 2">
-                          <img src="/images/duo/level_path/Story.png" alt="Story 2" />
+                        <button 
+                          className={`level-button ${unlockedLevels.header.includes(2) ? 'div-button' : 'story-button locked'}`}
+                          title="Level 3"
+                          onClick={() => unlockedLevels.header.includes(2) && startLevel('header', 2)}
+                          disabled={!unlockedLevels.header.includes(2)}
+                        >
+                          <img src={unlockedLevels.header.includes(2) ? "/images/duo/level_path/div.png" : "/images/duo/level_path/Story.png"} alt="Level 3" />
                         </button>
-                        <button className="level-button story-button" title="Story 3">
-                          <img src="/images/duo/level_path/Story.png" alt="Story 3" />
+                        <button 
+                          className={`level-button ${unlockedLevels.header.includes(3) ? 'div-button' : 'story-button locked'}`}
+                          title="Level 4"
+                          onClick={() => unlockedLevels.header.includes(3) && startLevel('header', 3)}
+                          disabled={!unlockedLevels.header.includes(3)}
+                        >
+                          <img src={unlockedLevels.header.includes(3) ? "/images/duo/level_path/div.png" : "/images/duo/level_path/Story.png"} alt="Level 4" />
                         </button>
                       </div>
                     )}
@@ -496,6 +689,15 @@ const Main = () => {
                           <path d="M19 12H5M12 19l-7-7 7-7"/>
                         </svg>
                       </button>
+                      
+                      {/* Level Progress Indicator */}
+                      <div className="level-progress">
+                        <span className="level-info">Level {currentLevelIndex + 1}</span>
+                        <div className="progress-bar">
+                          <div className="progress-fill" style={{width: `${(correctAnswersInLevel / 3) * 100}%`}}></div>
+                        </div>
+                        <span className="progress-text">{correctAnswersInLevel}/3</span>
+                      </div>
                       
                       {/* Soru Kısımı */}
                       <div className="question-section">
@@ -559,6 +761,57 @@ const Main = () => {
           <div ref={mapRef} className="map-container"></div>
         </div>
       </div>
+
+      {/* Intro Video */}
+      {showIntroVideo && (
+        <div className="intro-video-overlay">
+          <video 
+            className="intro-video"
+            autoPlay
+            onEnded={handleVideoEnd}
+          >
+            <source src="/assets/duointro.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+          
+          {showCharacterSelection && (
+            <div className="character-selection">
+              <div className="character-grid">
+                <div 
+                  className={`character-option ${selectedCharacter === 'wine-guy' ? 'selected' : ''}`}
+                  onClick={() => handleCharacterSelect('wine-guy')}
+                >
+                  <img src="/images/players/wine-guy.svg" alt="Wine Guy" />
+                </div>
+                <div 
+                  className={`character-option ${selectedCharacter === 'purple-girl' ? 'selected' : ''}`}
+                  onClick={() => handleCharacterSelect('purple-girl')}
+                >
+                  <img src="/images/players/purple-girl.svg" alt="Purple Girl" />
+                </div>
+                <div 
+                  className={`character-option ${selectedCharacter === 'blonde-kid' ? 'selected' : ''}`}
+                  onClick={() => handleCharacterSelect('blonde-kid')}
+                >
+                  <img src="/images/players/blonde-kid.svg" alt="Blonde Kid" />
+                </div>
+                <div 
+                  className={`character-option ${selectedCharacter === 'afro-woman' ? 'selected' : ''}`}
+                  onClick={() => handleCharacterSelect('afro-woman')}
+                >
+                  <img src="/images/players/afro-woman.svg" alt="Afro Woman" />
+                </div>
+              </div>
+              
+              {selectedCharacter && (
+                <button className="start-game-btn" onClick={handleStartGame}>
+                  Start
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Welcome Modal */}
       {showWelcomeModal && (

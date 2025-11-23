@@ -8,6 +8,11 @@
   align-items: center;
   background-color: #ffffff;
   cursor: pointer;
+  transition: background-color 1s ease-in-out;
+}
+
+.intro-container.transitioning {
+  background-color: #000000;
 }
 
 .intro-content {
@@ -67,4 +72,119 @@
 
 .fade-in {
   opacity: 1 !important;
+}
+
+.fade-out {
+  opacity: 0 !important;
+  transition: opacity 0.8s ease-out;
+}
+
+.intro-content {
+  transition: opacity 0.8s ease-out;
+}
+
+.duo-race-image {
+  transition: opacity 0.8s ease-out;
+}
+
+.duolingo-text, .gis-text {
+  transition: opacity 1s ease-in, opacity 0.8s ease-out;
+}
+
+/* Intro Video Styles */
+.intro-video-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #000000;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  z-index: 10000;
+}
+
+.intro-video {
+  max-width: 40%;
+  max-height: 40%;
+  width: auto;
+  height: auto;
+  outline: none;
+  margin-bottom: 20px;
+}
+
+/* Character Selection Styles */
+.character-selection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  margin-bottom: 50px;
+}
+
+.character-grid {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.character-option {
+  width: 80px;
+  height: 80px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 3px solid transparent;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.character-option:hover {
+  background: rgba(137, 226, 25, 0.2);
+  border-color: #89e219;
+  transform: scale(1.1);
+  box-shadow: 0 8px 20px rgba(137, 226, 25, 0.3);
+}
+
+.character-option.selected {
+  background: rgba(137, 226, 25, 0.3);
+  border-color: #89e219;
+  transform: scale(1.15);
+  box-shadow: 0 12px 30px rgba(137, 226, 25, 0.5);
+}
+
+.character-option img {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+}
+
+.start-game-btn {
+  background: linear-gradient(135deg, #89e219, #5cd65c);
+  color: white;
+  border: none;
+  padding: 15px 40px;
+  border-radius: 25px;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(137, 226, 25, 0.4);
+  transition: all 0.3s ease;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.start-game-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 12px 30px rgba(137, 226, 25, 0.6);
+  background: linear-gradient(135deg, #5cd65c, #89e219);
+}
+
+.start-game-btn:active {
+  transform: scale(0.95);
 }
