@@ -5,6 +5,11 @@ on:
     branches:
       - main # Sadece main branch'e push yapıldığında çalışır
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
