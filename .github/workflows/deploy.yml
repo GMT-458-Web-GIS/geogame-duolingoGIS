@@ -1,0 +1,36 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main # Sadece main branch'e push yapıldığında çalışır
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Repository'yi klonla
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2. Node.js kur
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18 # Node.js sürümü
+
+      # 3. Bağımlılıkları yükle
+      - name: Install dependencies
+        run: npm ci
+
+      # 4. Projeyi build et
+      - name: Build project
+        run: npm run build
+
+      # 5. GitHub Pages'e deploy et
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist # Vite'ın build çıktısı
