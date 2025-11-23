@@ -37,6 +37,10 @@ const Main = () => {
   const [correctAnswerIndex, setCorrectAnswerIndex] = useState(null); // Doğru cevabın index'i
   const [correctlyAnsweredCountries, setCorrectlyAnsweredCountries] = useState([]); // Doğru bilinen ülkeler
   
+  // Gem and Health system
+  const [gems, setGems] = useState(0); // Kullanıcının gem'leri, 0'dan başlar
+  const [health, setHealth] = useState(5); // Kullanıcının sağlığı, 5'ten başlar
+  
   // Level progression system
   const [currentLevelIndex, setCurrentLevelIndex] = useState(0); // Current level being played (0-3)
   const [correctAnswersInLevel, setCorrectAnswersInLevel] = useState(0); // Correct answers in current level
@@ -197,9 +201,11 @@ const Main = () => {
       if (selectedAnswer === correctAnswerIndex) {
         setCheckState('correct');
         
-        // Doğru cevaplanan ülkeyi listeye ekle
+        // Doğru cevaplanan ülkeyi listeye ekle ve 100 gem kazan
         if (currentQuestion && !correctlyAnsweredCountries.includes(currentQuestion.name)) {
           setCorrectlyAnsweredCountries(prev => [...prev, currentQuestion.name]);
+          // 100 gem ekle
+          setGems(prev => prev + 100);
           // Haritada rengi güncelle
           setTimeout(() => {
             highlightCountryOnMap(currentQuestion.name);
@@ -227,6 +233,19 @@ const Main = () => {
         correctAudio.play().catch(error => console.log('Audio play failed:', error));
       } else {
         setCheckState('incorrect');
+        // Health azalt
+        const newHealth = health - 1;
+        setHealth(newHealth);
+        
+        // Eğer health 0 olduysa ana sayfaya dön
+        if (newHealth <= 0) {
+          // Oyun bitti mesajı
+          setTimeout(() => {
+            alert('Game Over! Your health reached 0. Returning to main menu.');
+            handleBackToMain();
+          }, 1500); // 1.5 saniye bekle, sonra ana sayfaya dön
+        }
+        
         // Yanlış ses çal
         const wrongAudio = new Audio('/sfx/false.mp3');
         wrongAudio.volume = 0.5;
@@ -308,6 +327,18 @@ const Main = () => {
       // Karanlık moda geçerken direkt değiştir (açılış animasyonu CSS'den gelir)
       setIsDarkMode(true);
     }
+  };
+
+  const handleBackToMain = () => {
+    setGameStarted(false);
+    setCurrentLevel(null);
+    setSelectedSection(null);
+    setCorrectAnswersInLevel(0);
+    setSelectedAnswer(null);
+    setIsAnswerChecked(false);
+    setCheckState('unchecked');
+    // Health'i resetle
+    setHealth(5);
   };
 
   const handleHomeClick = () => {
@@ -482,11 +513,11 @@ const Main = () => {
           </div>
           <div className="stat-item">
             <img src="/assets/images/components/gem_button.svg" alt="Gems" className="stat-icon" />
-            <span className="stat-value">1200</span>
+            <span className="stat-value">{gems}</span>
           </div>
           <div className="stat-item">
             <img src="/assets/images/components/health_button.svg" alt="Health" className="stat-icon" />
-            <span className="stat-value">5</span>
+            <span className="stat-value">{health}</span>
           </div>
         </div>
       </div>
