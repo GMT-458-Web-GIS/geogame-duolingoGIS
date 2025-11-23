@@ -13,7 +13,21 @@ export default defineConfig(({ command }) => {
     publicDir: 'public',
     build: {
       outDir: 'dist',
-      assetsDir: 'assets'
+      assetsDir: 'assets',
+      rollupOptions: {
+        output: {
+          assetFileNames: 'assets/[name]-[hash][extname]'
+        }
+      }
+    },
+    experimental: {
+      renderBuiltUrl(filename, { hostType }) {
+        if (hostType === 'js') {
+          return { runtime: `window.__prependBase(${JSON.stringify(filename)})` }
+        } else {
+          return base + filename
+        }
+      }
     }
   }
 })

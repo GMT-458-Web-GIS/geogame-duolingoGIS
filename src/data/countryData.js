@@ -87,7 +87,9 @@ export const createCountryToContinentMap = () => {
 export const getFlagUrl = (countryCode, countryName) => {
   // Using 4x3 round SVG flags - format: {code}-{Name}-4x3.svg
   const formattedName = countryName.replace(/\s+/g, '-');
-  return `/databases/flags/4x3/round/SVG/${countryCode.toLowerCase()}-${formattedName}-4x3.svg`;
+  const base = import.meta.env.BASE_URL;
+  const path = `databases/flags/4x3/round/SVG/${countryCode.toLowerCase()}-${formattedName}-4x3.svg`;
+  return `${base}${path}`.replace(/\/\//g, '/');
 };
 
 export const getRandomCountry = (continent) => {

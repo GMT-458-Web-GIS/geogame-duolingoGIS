@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getAssetPath } from '../utils/assetPath';
 import './Intro.css';
 
 const Intro = () => {
@@ -45,7 +46,7 @@ const Intro = () => {
   const handleStartGame = () => {
     if (selectedCharacter && username.trim()) {
       // Play intro sound
-      const audio = new Audio('/sfx/intro.mp3');
+      const audio = new Audio(getAssetPath('/sfx/intro.mp3'));
       audio.volume = 0.5;
       audio.play().catch(error => {
         console.log('Audio play failed:', error);
@@ -67,7 +68,7 @@ const Intro = () => {
         <div className={`intro-content ${contentFadedOut ? 'fade-out' : ''}`}>
           <div className="title-with-images">
 
-            <img src="/images/players/duo-race.svg" alt="Duo" className={`duo-race-image ${contentFadedOut ? 'fade-out' : ''}`} />
+            <img src={getAssetPath('/images/players/duo-race.svg')} alt="Duo" className={`duo-race-image ${contentFadedOut ? 'fade-out' : ''}`} />
             <h1 className="intro-title">
               <span className={`duolingo-text ${showDuolingo ? 'fade-in' : ''} ${contentFadedOut ? 'fade-out' : ''}`}>
                 duolingo
@@ -88,7 +89,7 @@ const Intro = () => {
             autoPlay
             onEnded={handleVideoEnd}
           >
-            <source src="/duointro.mp4" type="video/mp4" />
+            <source src={getAssetPath('/duointro.mp4')} type="video/mp4" />
             Your browser does not support the video tag.
           </video>
           
@@ -99,7 +100,7 @@ const Intro = () => {
                 <>
                   <div className="character-preview-background"></div>
                   <div className="character-preview-large">
-                    <img src={`/images/players/${selectedCharacter}.svg`} alt="Selected Character Background" />
+                    <img src={getAssetPath(`/images/players/${selectedCharacter}.svg`)} alt="Selected Character Background" />
                   </div>
                 </>
               )}
@@ -110,32 +111,32 @@ const Intro = () => {
                     className={`character-option ${selectedCharacter === 'wine-guy' ? 'selected' : ''}`}
                     onClick={() => handleCharacterSelect('wine-guy')}
                   >
-                    <img src="/images/players/wine-guy.svg" alt="Wine Guy" />
+                    <img src={getAssetPath('/images/players/wine-guy.svg')} alt="Wine Guy" />
                   </div>
                   <div 
                     className={`character-option ${selectedCharacter === 'purple-girl' ? 'selected' : ''}`}
                     onClick={() => handleCharacterSelect('purple-girl')}
                   >
-                    <img src="/images/players/purple-girl.svg" alt="Purple Girl" />
+                    <img src={getAssetPath('/images/players/purple-girl.svg')} alt="Purple Girl" />
                   </div>
                   <div 
                     className={`character-option ${selectedCharacter === 'blonde-kid' ? 'selected' : ''}`}
                     onClick={() => handleCharacterSelect('blonde-kid')}
                   >
-                    <img src="/images/players/blonde-kid.svg" alt="Blonde Kid" />
+                    <img src={getAssetPath('/images/players/blonde-kid.svg')} alt="Blonde Kid" />
                   </div>
                   <div 
                     className={`character-option ${selectedCharacter === 'afro-woman' ? 'selected' : ''}`}
                     onClick={() => handleCharacterSelect('afro-woman')}
                   >
-                    <img src="/images/players/afro-woman.svg" alt="Afro Woman" />
+                    <img src={getAssetPath('/images/players/afro-woman.svg')} alt="Afro Woman" />
                   </div>
                 </div>
                 
                 {selectedCharacter && (
                   <div className="character-preview-section">
                     <div className="character-preview">
-                      <img src={`/images/players/${selectedCharacter}.svg`} alt="Selected Character" />
+                      <img src={getAssetPath(`/images/players/${selectedCharacter}.svg`)} alt="Selected Character" />
                     </div>
                     <div className="username-input-section">
                       <input

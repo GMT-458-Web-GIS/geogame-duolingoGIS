@@ -1,5 +1,6 @@
 ﻿import React, { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import { getAssetPath } from '../utils/assetPath';
 import Navbar from '../components/Navbar';
 import Map from 'ol/Map';
 import View from 'ol/View';
@@ -228,7 +229,7 @@ const Main = () => {
         }
         
         // Doğru ses çal
-        const correctAudio = new Audio('/sfx/true.mp3');
+        const correctAudio = new Audio(getAssetPath('/sfx/true.mp3'));
         correctAudio.volume = 0.5;
         correctAudio.play().catch(error => console.log('Audio play failed:', error));
       } else {
@@ -247,7 +248,7 @@ const Main = () => {
         }
         
         // Yanlış ses çal
-        const wrongAudio = new Audio('/sfx/false.mp3');
+        const wrongAudio = new Audio(getAssetPath('/sfx/false.mp3'));
         wrongAudio.volume = 0.5;
         wrongAudio.play().catch(error => console.log('Audio play failed:', error));
       }
@@ -363,7 +364,7 @@ const Main = () => {
     
     // Play intro sound
     const playIntroSound = () => {
-      const audio = new Audio('/sfx/intro.mp3');
+      const audio = new Audio(getAssetPath('/sfx/intro.mp3'));
       audio.volume = 0.5;
       audio.play().catch(error => {
         console.log('Audio play failed:', error);
@@ -406,7 +407,7 @@ const Main = () => {
   useEffect(() => {
     // Play intro sound when Main page loads
     const playIntroSound = () => {
-      const audio = new Audio('/sfx/intro.mp3');
+      const audio = new Audio(getAssetPath('/sfx/intro.mp3'));
       audio.volume = 0.5;
       audio.play().catch(error => {
         console.log('Audio play failed:', error);
@@ -508,15 +509,15 @@ const Main = () => {
         </div>
         <div className="stats-container">
           <div className="stat-item">
-            <img src="/images/components/streak_button.svg" alt="Streak" className="stat-icon" />
+            <img src={getAssetPath("/images/components/streak_button.svg")} alt="Streak" className="stat-icon" />
             <span className="stat-value">0</span>
           </div>
           <div className="stat-item">
-            <img src="/images/components/gem_button.svg" alt="Gems" className="stat-icon" />
+            <img src={getAssetPath("/images/components/gem_button.svg")} alt="Gems" className="stat-icon" />
             <span className="stat-value">{gems}</span>
           </div>
           <div className="stat-item">
-            <img src="/images/components/health_button.svg" alt="Health" className="stat-icon" />
+            <img src={getAssetPath("/images/components/health_button.svg")} alt="Health" className="stat-icon" />
             <span className="stat-value">{health}</span>
           </div>
         </div>
@@ -529,17 +530,17 @@ const Main = () => {
       />
       <div className="dark-mode-toggle" onClick={toggleDarkMode}>
         {isDarkMode ? (
-          <img src="/images/duo/icon.svg" alt="Light Mode" className="dark-mode-icon" />
+          <img src={getAssetPath("/images/duo/icon.svg")} alt="Light Mode" className="dark-mode-icon" />
         ) : (
-          <img src="/images/duo/icon-dark.svg" alt="Dark Mode" className="dark-mode-icon" />
+          <img src={getAssetPath("/images/duo/icon-dark.svg")} alt="Dark Mode" className="dark-mode-icon" />
         )}
       </div>
       <div className={`follow-banner ${isDarkMode ? 'slide-in' : ''} ${isClosing && isDarkMode ? 'slide-out' : ''}`}>
         <div className="follow-banner-content">
-          <img src="/images/duo/follow_for_more.png" alt="Follow for more" className="follow-image" />
+          <img src={getAssetPath("/images/duo/follow_for_more.png")} alt="Follow for more" className="follow-image" />
 
           <a href="https://github.com/kaanklcrsln" target="_blank" rel="noopener noreferrer" className="follow-button-link">
-            <img src="/images/duo/follow_button.png" alt="Follow button" className="follow-button" />
+            <img src={getAssetPath("/images/duo/follow_button.png")} alt="Follow button" className="follow-button" />
           </a>
 
         </div>
@@ -589,8 +590,8 @@ const Main = () => {
                   {/* Header 2 - Top Level */}
                   <div className={`level-section ${openSection === 'header2' ? 'open' : ''}`}>
                     <div className="header-wrapper" onClick={() => toggleSection('header2')}>
-                      <img src="/images/players/blonde-kid.svg" alt="Blonde Kid" className="character-image" />
-                      <img src="/images/duo/level_path/Header (2).png" alt="Header 2" className="header-image" />
+                      <img src={getAssetPath("/images/players/blonde-kid.svg")} alt="Blonde Kid" className="character-image" />
+                      <img src={getAssetPath("/images/duo/level_path/Header (2).png")} alt="Header 2" className="header-image" />
                     </div>
                     {openSection === 'header2' && (
                       <div className="level-content">
@@ -600,7 +601,7 @@ const Main = () => {
                           onClick={() => unlockedLevels.header2.includes(0) && startLevel('header2', 0)}
                           disabled={!unlockedLevels.header2.includes(0)}
                         >
-                          <img src="/images/duo/level_path/div.png" alt="Level 1" />
+                          <img src={getAssetPath("/images/duo/level_path/div.png")} alt="Level 1" />
                         </button>
                         <button 
                           className={`level-button ${unlockedLevels.header2.includes(1) ? 'div-button' : 'story-button locked'}`}
@@ -633,8 +634,8 @@ const Main = () => {
                   {/* Header 1 - Bottom Level */}
                   <div className={`level-section ${openSection === 'header1' ? 'open' : ''}`}>
                     <div className="header-wrapper" onClick={() => toggleSection('header1')}>
-                      <img src="/images/players/afro-woman.svg" alt="Afro Woman" className="character-image" />
-                      <img src="/images/duo/level_path/Header (1).png" alt="Header 1" className="header-image" />
+                      <img src={getAssetPath("/images/players/afro-woman.svg")} alt="Afro Woman" className="character-image" />
+                      <img src={getAssetPath("/images/duo/level_path/Header (1).png")} alt="Header 1" className="header-image" />
                     </div>
                     {openSection === 'header1' && (
                       <div className="level-content">
@@ -644,7 +645,7 @@ const Main = () => {
                           onClick={() => unlockedLevels.header1.includes(0) && startLevel('header1', 0)}
                           disabled={!unlockedLevels.header1.includes(0)}
                         >
-                          <img src="/images/duo/level_path/div.png" alt="Level 1" />
+                          <img src={getAssetPath("/images/duo/level_path/div.png")} alt="Level 1" />
                         </button>
                         <button 
                           className={`level-button ${unlockedLevels.header1.includes(1) ? 'div-button' : 'story-button locked'}`}
@@ -677,8 +678,8 @@ const Main = () => {
                   {/* Header - Final Level */}
                   <div className={`level-section ${openSection === 'header' ? 'open' : ''}`}>
                     <div className="header-wrapper" onClick={() => toggleSection('header')}>
-                      <img src="/images/players/purple-girl.svg" alt="Purple Girl" className="character-image" />
-                      <img src="/images/duo/level_path/Header.png" alt="Header" className="header-image" />
+                      <img src={getAssetPath("/images/players/purple-girl.svg")} alt="Purple Girl" className="character-image" />
+                      <img src={getAssetPath("/images/duo/level_path/Header.png")} alt="Header" className="header-image" />
                     </div>
                     {openSection === 'header' && (
                       <div className="level-content">
@@ -688,7 +689,7 @@ const Main = () => {
                           onClick={() => unlockedLevels.header.includes(0) && startLevel('header', 0)}
                           disabled={!unlockedLevels.header.includes(0)}
                         >
-                          <img src="/images/duo/level_path/div.png" alt="Level 1" />
+                          <img src={getAssetPath("/images/duo/level_path/div.png")} alt="Level 1" />
                         </button>
                         <button 
                           className={`level-button ${unlockedLevels.header.includes(1) ? 'div-button' : 'story-button locked'}`}
@@ -738,7 +739,7 @@ const Main = () => {
                       
                       {/* Soru Kısımı */}
                       <div className="question-section">
-                        <img src="/images/duo/Image & Audio.png" alt="Question" className="question-image" />
+                        <img src={getAssetPath("/images/duo/Image & Audio.png")} alt="Question" className="question-image" />
                         
                         {/* 4 Bayrak Seçeneği */}
                         <div className="flag-options-game">
@@ -807,7 +808,7 @@ const Main = () => {
             autoPlay
             onEnded={handleVideoEnd}
           >
-            <source src="/duointro.mp4" type="video/mp4" />
+            <source src={getAssetPath("/duointro.mp4")} type="video/mp4" />
             Your browser does not support the video tag.
           </video>
           
@@ -818,25 +819,25 @@ const Main = () => {
                   className={`character-option ${selectedCharacter === 'wine-guy' ? 'selected' : ''}`}
                   onClick={() => handleCharacterSelect('wine-guy')}
                 >
-                  <img src="/images/players/wine-guy.svg" alt="Wine Guy" />
+                  <img src={getAssetPath("/images/players/wine-guy.svg")} alt="Wine Guy" />
                 </div>
                 <div 
                   className={`character-option ${selectedCharacter === 'purple-girl' ? 'selected' : ''}`}
                   onClick={() => handleCharacterSelect('purple-girl')}
                 >
-                  <img src="/images/players/purple-girl.svg" alt="Purple Girl" />
+                  <img src={getAssetPath("/images/players/purple-girl.svg")} alt="Purple Girl" />
                 </div>
                 <div 
                   className={`character-option ${selectedCharacter === 'blonde-kid' ? 'selected' : ''}`}
                   onClick={() => handleCharacterSelect('blonde-kid')}
                 >
-                  <img src="/images/players/blonde-kid.svg" alt="Blonde Kid" />
+                  <img src={getAssetPath("/images/players/blonde-kid.svg")} alt="Blonde Kid" />
                 </div>
                 <div 
                   className={`character-option ${selectedCharacter === 'afro-woman' ? 'selected' : ''}`}
                   onClick={() => handleCharacterSelect('afro-woman')}
                 >
-                  <img src="/images/players/afro-woman.svg" alt="Afro Woman" />
+                  <img src={getAssetPath("/images/players/afro-woman.svg")} alt="Afro Woman" />
                 </div>
               </div>
               
@@ -858,7 +859,7 @@ const Main = () => {
             
             {/* Developer Section */}
             <div className="developer-section">
-              <img src="/images/players/kaan.svg" alt="Kaan Kılıçarslan" className="developer-image" />
+              <img src={getAssetPath("/images/players/kaan.svg")} alt="Kaan Kılıçarslan" className="developer-image" />
               <div className="developer-info">
                 <h3 className="developer-name">Kaan Kılıçarslan</h3>
                 <p className="developer-username">@kaanklcrsln</p>
@@ -866,7 +867,7 @@ const Main = () => {
               </div>
               {/* Duo Character */}
               <div className="duo-character">
-                <img src="/images/duo/duo-lover.svg" alt="Duo" className="duo-image" />
+                <img src={getAssetPath("/images/duo/duo-lover.svg")} alt="Duo" className="duo-image" />
               </div>
             </div>
 
