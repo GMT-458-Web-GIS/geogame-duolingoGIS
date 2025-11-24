@@ -136,7 +136,6 @@
 .character-selection.fade-in {
   opacity: 1;
 }
-}
 
 /* Character Preview Background - Website arkaplanında %40 opacity */
 /* Fade-in for character preview background */
@@ -154,7 +153,6 @@
 }
 .character-preview-background.fade-in {
   opacity: 1;
-}
 }
 
 /* Fade-in for character preview large image */
@@ -177,7 +175,6 @@
 .character-preview-large.fade-in {
   opacity: 0.3;
 }
-}
 
 .character-preview-large img {
   width: 100%;
@@ -196,7 +193,6 @@
 
 .character-grid.fade-in {
   opacity: 1;
-}
 }
 
 .character-option {
