@@ -118,6 +118,7 @@
 }
 
 /* Character Selection Styles */
+/* Fade-in animation for character selection */
 .character-selection {
   position: fixed;
   bottom: 120px;
@@ -128,9 +129,17 @@
   align-items: center;
   gap: 30px;
   z-index: 10001;
+  opacity: 0;
+  transition: opacity 0.8s cubic-bezier(0.4,0,0.2,1);
+}
+
+.character-selection.fade-in {
+  opacity: 1;
+}
 }
 
 /* Character Preview Background - Website arkaplanında %40 opacity */
+/* Fade-in for character preview background */
 .character-preview-background {
   position: fixed;
   top: 0;
@@ -140,8 +149,15 @@
   background-color: rgba(0, 0, 0, 0.4);
   z-index: 1;
   pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.8s cubic-bezier(0.4,0,0.2,1);
+}
+.character-preview-background.fade-in {
+  opacity: 1;
+}
 }
 
+/* Fade-in for character preview large image */
 .character-preview-large {
   position: fixed;
   top: 0;
@@ -150,12 +166,17 @@
   bottom: 0;
   width: 100%;
   height: 100%;
-  opacity: 0.3;
+  opacity: 0;
   z-index: 2;
   pointer-events: none;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: opacity 0.8s cubic-bezier(0.4,0,0.2,1);
+}
+.character-preview-large.fade-in {
+  opacity: 0.3;
+}
 }
 
 .character-preview-large img {
@@ -164,10 +185,18 @@
   object-fit: cover;
 }
 
+/* Fade-in for character grid */
 .character-grid {
   display: flex;
   gap: 20px;
   justify-content: center;
+  opacity: 0;
+  transition: opacity 0.8s cubic-bezier(0.4,0,0.2,1);
+}
+
+.character-grid.fade-in {
+  opacity: 1;
+}
 }
 
 .character-option {

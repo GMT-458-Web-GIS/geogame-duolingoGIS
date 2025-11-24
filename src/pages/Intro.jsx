@@ -9,9 +9,11 @@ const Intro = () => {
   const [showIntroVideo, setShowIntroVideo] = useState(false);
   const [showCharacterSelection, setShowCharacterSelection] = useState(false);
   const [selectedCharacter, setSelectedCharacter] = useState(null);
+  const [bgFadeIn, setBgFadeIn] = useState(false);
   const [username, setUsername] = useState('');
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [contentFadedOut, setContentFadedOut] = useState(false);
+    const [characterFadeIn, setCharacterFadeIn] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -37,10 +39,13 @@ const Intro = () => {
 
   const handleVideoEnd = () => {
     setShowCharacterSelection(true);
+    setTimeout(() => setCharacterFadeIn(true), 100); // trigger fade-in after grid mounts
   };
 
   const handleCharacterSelect = (character) => {
     setSelectedCharacter(character);
+    setBgFadeIn(false);
+    setTimeout(() => setBgFadeIn(true), 50); // trigger fade-in for bg
   };
 
   const handleStartGame = () => {
@@ -98,15 +103,15 @@ const Intro = () => {
               {/* Karakter seçildiğinde büyük karakter önizlemesi arkaplanda */}
               {selectedCharacter && (
                 <>
-                  <div className="character-preview-background"></div>
-                  <div className="character-preview-large">
+                  <div className={`character-preview-background${bgFadeIn ? ' fade-in' : ''}`}></div>
+                  <div className={`character-preview-large${bgFadeIn ? ' fade-in' : ''}`}>
                     <img src={getAssetPath(`/images/players/${selectedCharacter}.svg`)} alt="Selected Character Background" />
                   </div>
                 </>
               )}
               
-              <div className="character-selection">
-                <div className="character-grid">
+              <div className={`character-selection${characterFadeIn ? ' fade-in' : ''}`}> 
+                <div className={`character-grid${characterFadeIn ? ' fade-in' : ''}`}> 
                   <div 
                     className={`character-option ${selectedCharacter === 'wine-guy' ? 'selected' : ''}`}
                     onClick={() => handleCharacterSelect('wine-guy')}
@@ -132,12 +137,9 @@ const Intro = () => {
                     <img src={getAssetPath('/images/players/afro-woman.svg')} alt="Afro Woman" />
                   </div>
                 </div>
-                
                 {selectedCharacter && (
                   <div className="character-preview-section">
-                    <div className="character-preview">
-                      <img src={getAssetPath(`/images/players/${selectedCharacter}.svg`)} alt="Selected Character" />
-                    </div>
+
                     <div className="username-input-section">
                       <input
                         type="text"
