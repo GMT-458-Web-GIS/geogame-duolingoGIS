@@ -770,10 +770,10 @@ const Main = () => {
                           <img 
                             src={
                               checkState === 'correct' 
-                                ? '/images/duo/continue.png' 
+                                ? getAssetPath('/images/duo/continue.png') 
                                 : selectedAnswer !== null 
-                                  ? '/images/duo/check-2.png' 
-                                  : '/images/duo/check-1.png'
+                                  ? getAssetPath('/images/duo/check-2.png') 
+                                  : getAssetPath('/images/duo/check-1.png')
                             } 
                             alt={checkState === 'correct' ? 'Continue' : 'Check'} 
                           />
@@ -789,7 +789,7 @@ const Main = () => {
           {isAnswerChecked && (
             <div className={`result-message ${checkState === 'correct' ? 'correct' : 'incorrect'}`}>
               <img 
-                src={checkState === 'correct' ? '/images/duo/true.png' : '/images/duo/false.png'} 
+                src={checkState === 'correct' ? getAssetPath('/images/duo/true.png') : getAssetPath('/images/duo/false.png')} 
                 alt="Result" 
               />
             </div>
