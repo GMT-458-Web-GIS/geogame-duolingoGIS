@@ -102,9 +102,9 @@ const Main = () => {
   const loadContinentMap = (section) => {
     // Section'a göre JSON dosya yolunu belirle
     const geoJsonPaths = {
-      header2: '/databases/maps/europe.json',    // Europe
-      header1: '/databases/maps/america.json',   // Americas
-      header: '/databases/maps/asia.json'        // Asia
+      header2: getAssetPath('/databases/maps/europe.json'),    // Europe
+      header1: getAssetPath('/databases/maps/america.json'),   // Americas
+      header: getAssetPath('/databases/maps/asia.json')        // Asia
     };
 
     const geoJsonPath = geoJsonPaths[section];
