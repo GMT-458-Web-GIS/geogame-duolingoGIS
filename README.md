@@ -1,6 +1,6 @@
 # duolingoGIS
 
-[![Website](https://img.shields.io/badge/Website-Ziyaret_Et-blue?style=for-the-badge&logo=github)](https://gmt-458-web-gis.github.io/geogame-duolingoGIS/)
+[![Website](https://img.shields.io/badge/DUOLINGOGIS-green?style=for-the-badge&logo=github)](https://gmt-458-web-gis.github.io/geogame-duolingoGIS/)
 
 **DuoGIS** is a next-generation interactive learning platform built with **React**, combining **Duolingo's proven gamification methodology** with **geography education**.  
 The platform aims to teach users about **world geography** and **cultural symbols (flags)** through an **interactive map interface**.
