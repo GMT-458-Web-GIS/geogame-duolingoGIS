@@ -10,14 +10,14 @@
 
 @font-face {
   font-family: 'DIN-Next-Rounded';
-  src: url('/font/DIN-Next-Rounded.ttf') format('truetype');
+  src: url('/geogame-duolingoGIS/font/DIN-Next-Rounded.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'Duolingo-Feather-Bold';
-  src: url('/font/Duolingo Feather Bold.ttf') format('truetype');
+  src: url('/geogame-duolingoGIS/font/Duolingo Feather Bold.ttf') format('truetype');
   font-weight: bold;
   font-style: normal;
 }

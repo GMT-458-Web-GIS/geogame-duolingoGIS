@@ -772,7 +772,7 @@ const Main = () => {
                               checkState === 'correct' 
                                 ? getAssetPath('/images/duo/continue.png') 
                                 : selectedAnswer !== null 
-                                  ? getAssetPath('/images/duo/check 2.png') 
+                                  ? getAssetPath('/images/duo/check-2.png') 
                                   : getAssetPath('/images/duo/check-1.png')
                             } 
                             alt={checkState === 'correct' ? 'Continue' : 'Check'} 
